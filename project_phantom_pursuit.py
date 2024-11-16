@@ -2,7 +2,7 @@ import random
 import os
 import json
 
-# Game class ab
+# Game class karthik
 class Game:
     def __init__(self, player_name):
         self.player_name = player_name
