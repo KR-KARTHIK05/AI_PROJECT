@@ -1,3 +1,4 @@
+#this is the final one
 import random
 import os
 import json
@@ -47,7 +48,7 @@ def visualize_game_state(game):
     # Add game stats
     plt.text(0.02, 0.98, f'Sanity: {game.sanity}', 
              transform=plt.gca().transAxes, verticalalignment='top')
-    plt.text(0.02, 0.94, f'Score: {game.total_score}', 
+    plt.text(0.02, 0.94, f'Current Score: {game.current_score}', 
              transform=plt.gca().transAxes, verticalalignment='top')
     
     plt.legend()
@@ -69,7 +70,7 @@ class Game:
     def reset_stats(self):
         self.sanity = 0
         self.hearts_of_dead = self.user_stats.get('hearts_of_dead', 0)
-        self.total_score = self.user_stats.get('total_score', 0)
+        self.current_score = 0  # Reset current game score to 0
         self.booster_chance = 45
         self.heart_of_dead_chance = 10
         self.player_position = random.randint(1, 25)
@@ -152,7 +153,8 @@ class Game:
             else:
                 stats = {}
             
-            self.user_stats['total_score'] = self.total_score
+            # Update the user's total score by adding the current game's score
+            self.user_stats['total_score'] += self.current_score
             self.user_stats['hearts_of_dead'] = self.hearts_of_dead
             stats[self.player_name] = self.user_stats
             
@@ -164,10 +166,10 @@ class Game:
     def store(self):
         print("\nWelcome to the store!")
         print("You can exchange 2000 points for 1 Heart of the Dead.")
-        print(f"Current Score: {self.total_score}")
+        print(f"Total Score: {self.user_stats['total_score']}")
         print(f"Current Hearts of the Dead: {self.hearts_of_dead}")
 
-        if self.total_score < 2000:
+        if self.user_stats['total_score'] < 2000:
             print("\nYou don't have enough points to exchange for a Heart of the Dead.")
             print("You need at least 2000 points.\n")
             return
@@ -175,18 +177,18 @@ class Game:
         while True:
             choice = input("Do you want to exchange points for Hearts of the Dead? (y/n): ").strip().lower()
             if choice == 'y':
-                possible_exchanges = self.total_score // 2000
+                possible_exchanges = self.user_stats['total_score'] // 2000
                 print(f"You can exchange up to {possible_exchanges} Hearts of the Dead.")
                 num_exchanges = input(f"How many Hearts of the Dead would you like to purchase (1-{possible_exchanges})? ").strip()
 
                 if num_exchanges.isdigit():
                     num_exchanges = int(num_exchanges)
                     if 1 <= num_exchanges <= possible_exchanges:
-                        self.total_score -= num_exchanges * 2000
+                        self.user_stats['total_score'] -= num_exchanges * 2000
                         self.hearts_of_dead += num_exchanges
                         self.save_user_stats()
                         print(f"You successfully exchanged {num_exchanges * 2000} points for {num_exchanges} Hearts of the Dead!")
-                        print(f"Remaining Score: {self.total_score}")
+                        print(f"Remaining Total Score: {self.user_stats['total_score']}")
                         print(f"Current Hearts of the Dead: {self.hearts_of_dead}")
                     else:
                         print("Invalid number of exchanges. Please enter a valid amount.")
@@ -203,18 +205,23 @@ class Game:
 
     def update_stats_on_game_over(self):
         self.user_stats["games_played"] += 1
-        self.user_stats["total_score"] = self.total_score
+        
+        # Update best score if current score is higher
+        if self.current_score > self.user_stats["best_score"]:
+            self.user_stats["best_score"] = self.current_score
+            print(f"New Best Score: {self.current_score}!")
+        
+        # Add current game's score to total score
+        self.user_stats["total_score"] += self.current_score
         self.user_stats["hearts_of_dead"] = self.hearts_of_dead
-        if self.total_score > self.user_stats["best_score"]:
-            self.user_stats["best_score"] = self.total_score
         self.save_user_stats()
 
     def display_user_stats(self):
         print(f"\nUser Stats for {self.player_name}:")
         print(f"Games Played: {self.user_stats['games_played']}")
         print(f"Total Score: {self.user_stats['total_score']}")
-        print(f"Hearts of the Dead Collected: {self.user_stats['hearts_of_dead']}")
         print(f"Best Score: {self.user_stats['best_score']}")
+        print(f"Hearts of the Dead Collected: {self.user_stats['hearts_of_dead']}")
 
     def start_game(self):
         self.display_user_stats()
@@ -282,12 +289,7 @@ class Game:
             visualize_game_state(self)
             
             print(f"\nCurrent Position: {self.player_position}")
-            print(f"Ghost Position: {self.ghost_position}")
-            print(f"Distance to Ghost: {self.manhattan_distance(self.player_position, self.ghost_position)}")
-            print(f"Remaining Sanity: {self.sanity}")
-            print(f"Current Score: {self.total_score}")
-            print(f"Hearts of the Dead: {self.hearts_of_dead}")
-            print(f"Difficulty Level: {'Easy' if self.difficulty == 1 else 'Medium' if self.difficulty == 2 else 'Hard'}")
+            print(f"Current Score: {self.current_score}")
             
             available_moves = self.get_neighbors(self.player_position)
             print(f"Available Moves: {available_moves}")
@@ -308,7 +310,7 @@ class Game:
                 base_sanity_loss = {1: 8, 2: 10, 3: 12}.get(self.difficulty, 8)
                 proximity_penalty = max(0, (5 - distance_to_ghost) * 2)
                 self.sanity -= (base_sanity_loss + proximity_penalty)
-                self.total_score += 50
+                self.current_score += 10  # Update current game score
 
                 if self.player_position == self.ghost_position:
                     if not self.handle_ghost_encounter():
@@ -317,9 +319,9 @@ class Game:
                 print("Invalid move! Try again.")
         
         print("Game Over!")
+        print(f"Final Score this game: {self.current_score}")
         plt.close()  # Close the visualization window
         self.update_stats_on_game_over()
-        self.save_user_stats()
 
 if __name__ == "__main__":
     player_name = input("Enter your name: ")
