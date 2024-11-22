@@ -125,7 +125,7 @@ class Game:
             if self.ghost_move_counter >= 5:
                 if not self.ghost_hunt:  # Only play the sound when the hunt starts
                     print("The ghost is hunting you! Sanity will decrease by 6 each move.")
-                    playsound("/home/KID6/Desktop/DSA/PROJECT/AI_PROJECT/AI_PROJECT/Sound/iseeyou.mp3")
+                    playsound("/Sound/iseeyou.mp3")
                 self.ghost_hunt = True
                 self.hunt_duration = random.randint(2, 5)
             else:
@@ -209,7 +209,7 @@ class Game:
                         self.user_stats['total_score'] -= num_exchanges * 2000
                         self.hearts_of_dead += num_exchanges
                         self.save_user_stats()
-                        playsound("/home/KID6/Desktop/DSA/PROJECT/AI_PROJECT/AI_PROJECT/Sound/revive.mp3")
+                        playsound("/Sound/revive.mp3")
                         print(f"You successfully exchanged {num_exchanges * 2000} points for {num_exchanges} Hearts of the Dead!")
                         print(f"Remaining Total Score: {self.user_stats['total_score']}")
                         print(f"Current Hearts of the Dead: {self.hearts_of_dead}")
@@ -277,7 +277,7 @@ class Game:
                 print("Invalid input. Please enter 'y' or 'n'.")
             
             if respawn_choice == 'y':
-                playsound("/home/KID6/Desktop/DSA/PROJECT/AI_PROJECT/AI_PROJECT/Sound/breath.mp3")
+                playsound("/Sound/breath.mp3")
                 self.hearts_of_dead -= 1
                 respawn_sanity = {
                     1: 50,  # Easy
@@ -302,7 +302,7 @@ class Game:
             self.sanity += 20
         elif random.randint(1, 100) <= self.heart_of_dead_chance:
             print("You found a Heart of the Dead!")
-            playsound("/home/KID6/Desktop/DSA/PROJECT/AI_PROJECT/AI_PROJECT/Sound/revive.mp3")
+            playsound("/Sound/revive.mp3")
             self.hearts_of_dead += 1
 
     def play(self):
@@ -348,7 +348,7 @@ class Game:
                 print("Invalid move! Try again.")
         
         print("Game Over!")
-        playsound("/home/KID6/Desktop/DSA/PROJECT/AI_PROJECT/AI_PROJECT/Sound/end.mp3")
+        playsound("/Sound/end.mp3")
         print(f"Final Score this game: {self.current_score}")
         plt.close()
         self.update_stats_on_game_over()
