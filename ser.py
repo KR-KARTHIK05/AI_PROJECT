@@ -4,12 +4,12 @@ import time
 import uuid
 import re
 
-# Ansh #Nishant
+
 def get_mac_address():
     mac = uuid.getnode()
     mac_address = ':'.join(re.findall('..', '%012x' % mac))
     return mac_address
-#Nishant
+
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(("192.168.131.2", 5555))
@@ -24,7 +24,7 @@ def start_server():
     game_over = False
     ghost_speed = 1.0  
 
-    # Ansh
+    
     def display_lobby():
         lobby_table = "\nPlayer No | Player Name | MAC Addr           | Name in Game\n"
         lobby_table += "-" * 60 + "\n"
@@ -58,7 +58,7 @@ def start_server():
     player_positions = [[15, 15], [15, 0], [0, 15]]  
     ghost_position = [1, 1]
     caught_players = set()
-    #Nishant
+    
     def generate_grid():
         grid = [["." for _ in range(grid_size)] for _ in range(grid_size)]
         for i, pos in enumerate(player_positions):
@@ -66,7 +66,7 @@ def start_server():
                 grid[pos[0]][pos[1]] = lobby[i]['name_in_game']
         grid[ghost_position[0]][ghost_position[1]] = "G"
         return grid
-    #Nishant
+    
     def send_grid_and_timer():
         grid = generate_grid()
         grid_str = "\n".join([" ".join(row) for row in grid]) + "\n"
@@ -83,7 +83,7 @@ def start_server():
             if conn not in caught_players:
                 conn.sendall(message.encode())
     
-# Ansh
+
     def move_ghost():
         active_positions = [player_positions[i] for i in range(3) if player_names[i] not in caught_players]
         if not active_positions:
@@ -101,7 +101,7 @@ def start_server():
                 ghost_position[1] += 1
             elif ghost_position[1] > target[1]:
                 ghost_position[1] -= 1
-    #Nishant
+    
     def game_loop():
         nonlocal game_over, ghost_speed
         while not game_over:
@@ -135,7 +135,7 @@ def start_server():
         for conn in connections:
             conn.sendall(final_message.encode())
     
-# Ansh    
+    
     def handle_player_input(player_id, conn):
         while not game_over:
             try:
