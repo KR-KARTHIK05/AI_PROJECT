@@ -24,7 +24,7 @@ def start_client():
                 break
 
     threading.Thread(target=receive_data, daemon=True).start()
-    # Ansh
+    
     try:
         name = input("Enter your name: ").strip()
         if not name:
@@ -36,7 +36,7 @@ def start_client():
         print(f"Error sending name: {e}")
         return
     
-# Ansh
+
     while True:
         try:
             move = input("Move (W/A/S/D or EXIT to quit): ").strip().upper()
