@@ -1,6 +1,6 @@
 # AI Project
 ## Project Phantom Pursuit
-# Ansh Bajpai, Nishant Shah, Arjun K Indunesh, K R Karthik, Swagathchandran S
+### Ansh Bajpai, Nishant Shah, Arjun K Indunesh, K R Karthik, Swagathchandran S
 
 This is repository for a ghost hunting game based on some AI Algorithms
 
